@@ -1,0 +1,65 @@
+{
+  "caocao": {
+    "heroLine": "你会先判断手中有什么，再决定如何改变局面。",
+    "tensionLine": "他能容下人才，却未必容得下失控；能在乱世建立秩序，也会让秩序带上自己的意志。",
+    "originalSealLine": "先定胜势，再出其锋。",
+    "userMirror": {
+      "decisionStyle": "当信息不完整、时间又有限时，你更愿意先形成可执行的方向，而不是等待所有条件都明确。你对变化并不陌生，甚至会把变化看成重新配置资源的机会。",
+      "peopleStyle": "你愿意把能力和关系分开判断。一个人是否属于自己的圈子、是否曾经发生过冲突，并不会自动盖过他能否解决问题。",
+      "strength": "你能够在杂乱信息中抓住决定局势的支点，并把人才、时间和资源重新放到最需要的位置。别人还在争论形式时，你已经开始追问什么真正有效。",
+      "cost": "当“把事情做成”成为最高优先级，你可能低估他人对过程、公平与安全感的需要。你未必刻意压迫别人，但推进局面的速度，可能让较慢的人来不及表达。"
+    },
+    "timeline": [
+      {
+        "date": "189年前后",
+        "title": "秩序崩解后的起兵",
+        "event": "汉末政治秩序迅速瓦解，曹操没有等待局势自行恢复，而是进入诸侯竞争。他早期屡有败绩，却持续重组力量，逐渐形成自己的政治与军事集团。",
+        "traitMeaning": "在不确定中先取得行动位置。",
+        "sources": [{"type":"primary_history","label":"正史记载","author":"陈寿","title":"三国志·魏书·武帝纪","chapterOrEpisode":"卷一","paraphrase":"武帝纪按年记录曹操起兵、征战与集团形成。","interpretation":"行动先于完备，是其早期最稳定的行为特征之一。","url":"https://zh.wikisource.org/wiki/三國志/卷01","verified":true}]
+      },
+      {
+        "date": "196年",
+        "title": "迎奉汉献帝至许",
+        "event": "曹操迎汉献帝至许，由此获得处理朝廷政务和号令地方的重要政治位置。此举既有重建秩序的一面，也使皇权逐渐受制于曹操集团。",
+        "traitMeaning": "同时看见制度名义与现实权力。",
+        "sources": [{"type":"primary_history","label":"正史记载","author":"陈寿","title":"三国志·魏书·武帝纪","chapterOrEpisode":"建安元年条","paraphrase":"记载迎天子都许及相关政治安排。","interpretation":"同一行动兼具秩序重建与权力重组两面。","url":"https://zh.wikisource.org/wiki/三國志/卷01","verified":true}]
+      },
+      {
+        "date": "200年",
+        "title": "官渡之战",
+        "event": "面对实力更强的袁绍，曹操依靠较集中的决策、情报判断和对关键节点的把握扭转局势。胜利并不意味着每一步都正确，而是他能在资源有限时找到改变全局的支点。",
+        "traitMeaning": "在不对称局势中寻找决定性位置。",
+        "sources": [{"type":"primary_history","label":"正史记载","author":"陈寿","title":"三国志·魏书·武帝纪","chapterOrEpisode":"建安五年条","paraphrase":"记官渡前后军情、许攸来降与乌巢之战。","interpretation":"资源差距并未阻止其在关键环节集中下注。","url":"https://zh.wikisource.org/wiki/三國志/卷01","verified":true}]
+      },
+      {
+        "date": "晚年",
+        "title": "权力、秩序与继承",
+        "event": "统一北方后，曹操的政治地位不断上升。他建立的制度与人才体系支撑了曹魏，同时也使汉室名义与曹氏实际权力之间的矛盾越来越无法回避。",
+        "traitMeaning": "建立秩序的人，最终也必须面对秩序属于谁。",
+        "sources": [{"type":"later_history","label":"后世史家","author":"司马光","title":"资治通鉴","chapterOrEpisode":"汉纪相关卷次","paraphrase":"以编年方式重述曹操晚年权位扩张与继承安排。","interpretation":"后出的编年叙事帮助观察权力变化，但不与陈寿正文混同。","url":"https://zh.wikisource.org/wiki/資治通鑑","verified":true}]
+      }
+    ],
+    "evaluations": [
+      {"type":"primary_history","label":"正史定评","author":"陈寿","title":"三国志·魏书·武帝纪","chapterOrEpisode":"卷一篇末评","quote":"非常之人，超世之杰。","paraphrase":"陈寿将曹操的成业归于谋略、用人和驾驭复杂局面的能力。","interpretation":"“非常”并不只是赞美，也说明此人难以用普通臣子的尺度衡量。","url":"https://zh.wikisource.org/wiki/三國志/卷01","verified":true},
+      {"type":"annotated_history","label":"注家补证","author":"裴松之","title":"三国志注所引诸书","chapterOrEpisode":"武帝纪诸注","paraphrase":"裴注保存的异闻与旧说，为陈寿正文补入严酷、猜忌、机诈与报复等复杂材料。","interpretation":"材料来源与可靠程度并不完全相同，却提醒我们：高效用人不等于对所有人宽容，建立规则也不等于规则从不服务于权力。","url":"https://zh.wikisource.org/wiki/三國志/卷01","verified":true},
+      {"type":"modern_lecture","label":"现代讲述","author":"易中天","title":"易中天品三国·奸雄之谜","chapterOrEpisode":"魏武挥鞭第3集","paraphrase":"节目将曹操理解为高度复杂的人物，“奸”与“雄”并非两张无关的脸，而共同属于同一性格结构。","interpretation":"这是现代公共史表达，适合帮助普通读者进入人物，但属于主讲人的解释，不等同于史书结论。","url":"https://tv.cctv.com/2012/02/19/VIDE1394696358235264.shtml","verified":true},
+      {"type":"literary","label":"后世印象","author":"罗贯中及历代戏曲传统","title":"三国演义与舞台形象","paraphrase":"文学与戏曲强化了曹操的奸雄和白脸形象，使他成为忠奸冲突中最醒目的角色之一。","interpretation":"当后世强调汉室正统，他更接近权臣；当后世强调乱世能力，他又成为重才、敢行的英雄。形象变化本身也是历史的一部分。","url":"https://zh.wikisource.org/wiki/三國演義","verified":true}
+    ],
+    "poetry": [
+      {"type":"literary","label":"人物自作","author":"曹操","title":"短歌行","quote":"周公吐哺，天下归心。","paraphrase":"诗中既有对生命短促的忧惧，也有对人才不断流失的焦虑。","interpretation":"所追求的“归心”既包含功业理想，也带着掌权者对人才和秩序的强烈占有欲。","url":"https://www.gushiwen.cn/gushiwen_c133a8e988.aspx","verified":true},
+      {"type":"literary","label":"人物自作","author":"曹操","title":"龟虽寿","quote":"老骥伏枥，志在千里。","paraphrase":"晚年的曹操依然用强烈的进取意志回应时间与衰老。","interpretation":"他并不只是冷静计算，也始终被功业和未完成之事驱动；这使战略、进取与名望在同一个人身上相遇。","url":"https://m.gushiwen.cn/shiwenv_d78b6331098e.aspx","verified":true}
+    ],
+    "historyVsFiction": {
+      "history": "统一北方的政治军事人物，善于用人、长于谋略，也留下严酷与机诈的争议材料。",
+      "fiction": "奸雄色彩被强化，常被置于汉室忠臣的对面，并由戏曲脸谱进一步符号化。",
+      "assessmentUses": "只取战略判断、执行、用人和控制之间的行为组合，不比较你的生平、道德或政治立场。"
+    },
+    "achievementCostPairs": [
+      {"strength":"不拘一格地使用人才","cost":"人才也可能被视为功能与资源"},
+      {"strength":"在不确定中迅速决断","cost":"决策过度集中，错误也会被放大"},
+      {"strength":"重建秩序和行政体系","cost":"秩序可能越来越依附个人权力"},
+      {"strength":"容忍有用之人的锋芒","cost":"一旦威胁控制，容忍可能迅速结束"},
+      {"strength":"强烈而持续的功业意识","cost":"难以停下，也难接受局面脱离掌控"}
+    ]
+  }
+}
