@@ -1,9 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { answerOptions, dimensions, type Question } from "@/data/questions";
+import { answerOptions, type Question } from "@/data/questions";
 
-export function QuestionCard({ question, value, direction, onAnswer }: { question: Question; value?: number; direction: number; onAnswer: (value:number) => void }) {
+export function QuestionCard({ question, value, keyboardValue, direction, onAnswer, onKeyboardValue }: { question: Question; value?: number; keyboardValue?:number; direction: number; onAnswer: (value:number) => void; onKeyboardValue:(value:number)=>void }) {
   return (
     <AnimatePresence mode="wait" custom={direction}>
       <motion.article
@@ -12,23 +12,25 @@ export function QuestionCard({ question, value, direction, onAnswer }: { questio
         initial={{ opacity: 0, x: direction * 28, filter: "blur(4px)" }}
         animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
         exit={{ opacity: 0, x: direction * -20, filter: "blur(3px)" }}
-        transition={{ duration: .34, ease: [0.22,1,0.36,1] }}
+        transition={{ duration: .18, ease: [0.22,1,0.36,1] }}
         className="question-card"
       >
         <div className="question-card__index"><span>第</span><b>{toChinese(question.id)}</b><span>问</span></div>
-        <p className="question-card__dimension">此问观 · {dimensions[question.dimension]}</p>
         <h1>{question.text}</h1>
+        <p className="question-card__prompt">请选择更接近日常中的你，而不是你认为更正确的答案。</p>
         <div className="answer-list" role="radiogroup" aria-label="请选择与你实际情况最接近的一项">
           {answerOptions.map((option, index) => (
             <motion.button
               key={option.value}
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * .035 }}
-              className={value === option.value ? "answer-option is-selected" : "answer-option"}
+              className={`answer-option ${value === option.value ? "is-selected" : ""} ${keyboardValue === option.value ? "is-keyboard" : ""}`}
               role="radio" aria-checked={value === option.value}
               onClick={() => onAnswer(option.value)}
+              onFocus={() => onKeyboardValue(option.value)}
+              onMouseEnter={() => onKeyboardValue(option.value)}
             >
-              <span className="answer-option__mark">{value === option.value ? "●" : "○"}</span>
-              <span><b>{option.label}</b><small>{option.note}</small></span>
+              <span className="answer-option__number">{option.value}</span>
+              <b>{option.label}</b>
               <i aria-hidden="true" />
             </motion.button>
           ))}

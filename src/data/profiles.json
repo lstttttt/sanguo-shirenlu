@@ -1,0 +1,14 @@
+{
+  "caocao":{"core":[0,10],"auxiliary":[1,3],"conflict":9,"weakness":4},
+  "liubei":{"core":[4,9],"auxiliary":[5,3],"conflict":10,"weakness":7},
+  "sunquan":{"core":[5,8],"auxiliary":[3,10],"conflict":11,"weakness":6},
+  "sunce":{"core":[0,6],"auxiliary":[7,4],"conflict":5,"weakness":2},
+  "zhugeliang":{"core":[2,1],"auxiliary":[9,3],"conflict":10,"weakness":6},
+  "zhouyu":{"core":[1,0],"auxiliary":[7,3],"conflict":5,"weakness":11},
+  "lusu":{"core":[8,1],"auxiliary":[5,3],"conflict":7,"weakness":11},
+  "guanyu":{"core":[9,7],"auxiliary":[11,0],"conflict":10,"weakness":8},
+  "zhangfei":{"core":[7,0],"auxiliary":[9,6],"conflict":5,"weakness":3},
+  "simayi":{"core":[5,1],"auxiliary":[10,2],"conflict":11,"weakness":6},
+  "yuanshao":{"core":[11,1],"auxiliary":[4,2],"conflict":0,"weakness":3},
+  "lvbu":{"core":[6,0],"auxiliary":[7,10],"conflict":9,"weakness":1}
+}

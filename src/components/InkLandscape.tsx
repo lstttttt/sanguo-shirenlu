@@ -16,6 +16,14 @@ export function InkLandscape({ className = "" }: { className?: string }) {
         <path d="M180 606v-120m0 30-35-35m35 53 47-44m-47 3-14-58m14 42 33-75" />
       </g>
       <g fill="#9b2c2c" opacity=".55"><circle cx="897" cy="312" r="4"/><circle cx="941" cy="275" r="3"/><circle cx="177" cy="430" r="3"/></g>
+      <g fill="none" stroke="#9b2c2c" strokeWidth="1.4" strokeDasharray="5 7" opacity=".45">
+        <path d="M235 498Q410 355 575 492T910 408"/><path d="M470 540Q620 390 805 510"/>
+      </g>
+      <g fill="#1c1b18" opacity=".56" fontFamily="serif" fontSize="14" letterSpacing="3">
+        <text x="214" y="486">成都 · 蜀</text><text x="548" y="480">襄阳</text><text x="870" y="396">建业 · 吴</text><text x="455" y="554">许都 · 魏</text>
+      </g>
+      <g stroke="#1c1b18" strokeWidth="1" opacity=".35"><path d="M160 650h880"/><path d="M280 644v12M540 644v12M800 644v12"/></g>
+      <g fill="#1c1b18" opacity=".48" fontFamily="sans-serif" fontSize="11"><text x="250" y="674">184</text><text x="510" y="674">220</text><text x="770" y="674">280</text></g>
     </svg>
   );
 }
