@@ -1,5 +1,6 @@
 import raw from "./historical-content.json";
 import type { CharacterId } from "./questions";
+import { expandedHistoricalContent } from "./historical-content-expanded";
 
 export type SourceType="primary_history"|"annotated_history"|"later_history"|"literary"|"modern_lecture"|"product_copy";
 export interface HistoricalSource{type:SourceType;label:string;author?:string;title:string;chapterOrEpisode?:string;quote?:string;paraphrase:string;interpretation:string;url?:string;verified:boolean}
@@ -10,6 +11,7 @@ export interface CharacterHistoricalContent{
   evaluations:HistoricalSource[];poetry:HistoricalSource[];
   historyVsFiction:{history:string;fiction:string;assessmentUses:string};
   achievementCostPairs:Array<{strength:string;cost:string}>;
+  closingLine?:string;
 }
 
-export const historicalContent=raw as Partial<Record<CharacterId,CharacterHistoricalContent>>;
+export const historicalContent={...(raw as Partial<Record<CharacterId,CharacterHistoricalContent>>),...expandedHistoricalContent};
