@@ -46,13 +46,19 @@ const texts = [
   "如果不得不改变承诺，我会先说明原因、重新协商，并承担相应代价。",
 ];
 
-export const questions: Question[] = texts.map((text, index) => ({
+const baseQuestions: Question[] = texts.map((text, index) => ({
   id: index + 1,
   dimension: dimensionOrder[index % 12],
   text,
   reverse: index >= 12 && index < 24,
   kind: index < 12 ? "behavior" : index < 24 ? "reverse" : "tradeoff",
 }));
+
+// Interleave direct, reverse and trade-off prompts so users do not encounter
+// twelve similarly framed statements in a row. The scoring dimension is kept.
+export const questions: Question[] = Array.from({length:12},(_,index)=>[baseQuestions[index],baseQuestions[index+12],baseQuestions[index+24]])
+  .flat()
+  .map((question,index)=>({...question,id:index+1}));
 
 export const answerOptions = [
   { value: 1, label: "很不像我" },

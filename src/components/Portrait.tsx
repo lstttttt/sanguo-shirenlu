@@ -6,7 +6,7 @@ export function Portrait({ character }: { character: Character }) {
       <div className="portrait__sun" />
       <div className="portrait__ink portrait__ink--one" />
       <div className="portrait__ink portrait__ink--two" />
-      <svg viewBox="0 0 360 480" aria-label={`${character.name}意象剪影`} role="img">
+      <svg viewBox="0 0 360 480" aria-label={`${character.name}意象剪影：${character.era}，${character.portrait}气质`} role="img">
         <g fill="none" stroke="var(--tone)" strokeWidth="2" opacity=".7">
           <path d="M32 96Q92 42 156 86T306 52" strokeDasharray="5 7"/><path d="M48 128Q118 94 170 120T318 91"/>
           <circle cx="32" cy="96" r="5" fill="var(--tone)"/><circle cx="156" cy="86" r="5" fill="var(--tone)"/><circle cx="306" cy="52" r="5" fill="var(--tone)"/>

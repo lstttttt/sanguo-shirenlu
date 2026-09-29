@@ -13,23 +13,23 @@ export default function Home() {
     <PageShell className="home-page">
       <div className="home-nav"><span>汉末人物精神图谱</span><span>公元 184—280 · 群雄行迹</span></div>
       <section className="hero">
-        <motion.div className="hero__eyebrow" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .25 }}>
+        <motion.div className="hero__eyebrow" initial={false} animate={{ opacity: 1 }}>
           <span />据史而观 · 借古照今<span />
         </motion.div>
-        <motion.div className="hero__title-wrap" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8 }}>
+        <motion.div className="hero__title-wrap" initial={false} animate={{ opacity: 1, y: 0 }}>
           <h1><span>三国</span><em>识人录</em></h1>
           <div className="hero__seal" aria-hidden="true">观<br/>心</div>
         </motion.div>
-        <motion.p className="hero__slogan" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .55 }}>
+        <motion.p className="hero__slogan" initial={false} animate={{ opacity: 1 }}>
           一卷风云<br/><b>半部人心</b>
         </motion.p>
-        <motion.p className="hero__intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .7 }}>
-          <b>不是看你喜欢哪位英雄，</b><br/>而是看你在局势、人心与得失之间，会如何取舍。<br/>
-          <span>三十六次选择，对照十二位三国人物的处世结构。</span>
+        <motion.p className="hero__intro" initial={false} animate={{ opacity: 1 }}>
+          <b>在利益、承诺与风险之间，</b><br/>你更常怎样做决定？<br/>
+          <span>36 次选择，对照 12 位三国人物的处世结构。</span>
         </motion.p>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .85 }}>
+        <motion.div initial={false} animate={{ opacity: 1, y: 0 }}>
           <AncientButton tone="seal" onClick={() => router.push("/test")}>开始识人 <ArrowRight size={18}/></AncientButton>
-          <p className="hero__meta">约 4 分钟 · 无标准答案 · 自动保存进度</p>
+          <p className="hero__meta">约 6–8 分钟 · 非心理测量 · 自动保存进度</p>
         </motion.div>
       </section>
       <InkLandscape />

@@ -30,7 +30,7 @@ export default function TestPage() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       try {
-        const saved = JSON.parse(localStorage.getItem("shirenlu-progress-v2") || "null");
+        const saved = JSON.parse(localStorage.getItem("shirenlu-progress-v3") || "null");
         if (saved?.answers) { const savedCurrent=Math.min(saved.current || 0,35); setAnswers(saved.answers); setCurrent(savedCurrent); setKeyboardValue(saved.answers[savedCurrent]||3); }
       } catch {}
       setReady(true);
@@ -39,7 +39,7 @@ export default function TestPage() {
   }, []);
 
   useEffect(() => {
-    if (ready) localStorage.setItem("shirenlu-progress-v2", JSON.stringify({ answers, current }));
+    if (ready) localStorage.setItem("shirenlu-progress-v3", JSON.stringify({ answers, current }));
   }, [answers, current, ready]);
 
   const answered = useMemo(() => answers.filter(Boolean).length, [answers]);
@@ -65,21 +65,20 @@ export default function TestPage() {
     setAnswers(nextAnswers);
     if (current === questions.length - 1) {
       const result = calculateResult(nextAnswers);
-      localStorage.setItem("shirenlu-result-v2", JSON.stringify(result));
-      localStorage.removeItem("shirenlu-progress-v2");
+      localStorage.setItem("shirenlu-result-v3", JSON.stringify(result));
+      localStorage.removeItem("shirenlu-progress-v3");
       window.setTimeout(() => router.push(`/result/${result.scores[0].id}`), 260);
       return;
     }
     window.setTimeout(() => {
-      if ((current + 1) % 6 === 0) setInterlude(Math.floor(current / 6));
-      else { setKeyboardValue(nextAnswers[current+1]||3); setDirection(1); setCurrent(v => v + 1); }
+      setKeyboardValue(nextAnswers[current+1]||3); setDirection(1); setCurrent(v => v + 1);
       setAdvancing(false);
     }, 160);
   }
 
   function continueChapter() { setInterlude(null); setKeyboardValue(answers[current+1]||3); setDirection(1); setCurrent(v => v + 1); }
   function back() { if (current > 0) { setKeyboardValue(answers[current-1]||3); setDirection(-1); setCurrent(v => v - 1); } else router.push("/"); }
-  function reset() { localStorage.removeItem("shirenlu-progress-v2"); setAnswers([]); setKeyboardValue(3); setCurrent(0); setDirection(-1); }
+  function reset() { localStorage.removeItem("shirenlu-progress-v3"); setAnswers([]); setKeyboardValue(3); setCurrent(0); setDirection(-1); }
 
   if (!ready) return <PageShell className="test-page" />;
 

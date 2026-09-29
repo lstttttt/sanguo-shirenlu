@@ -13,6 +13,7 @@ for(const [id,content] of Object.entries(historicalContent)){
   const sources=[...content.evaluations,...content.poetry,...content.timeline.flatMap(item=>item.sources)];
   assert.ok(sources.every(source=>source.type&&source.label&&source.title&&source.paraphrase&&source.interpretation),`${id}: incomplete source audit fields`);
   assert.ok(sources.filter(source=>source.verified).every(source=>source.url?.startsWith("https://")),`${id}: verified sources must link to an HTTPS page`);
+  assert.ok(sources.filter(source=>source.verified&&source.quote).every(source=>source.quote!.length<=30),`${id}: verified direct quotes must remain short`);
 }
 
 console.log(`Historical content validation passed for all ${Object.keys(historicalContent).length} character profiles.`);

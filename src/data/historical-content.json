@@ -36,14 +36,14 @@
         "title": "权力、秩序与继承",
         "event": "统一北方后，曹操的政治地位不断上升。他建立的制度与人才体系支撑了曹魏，同时也使汉室名义与曹氏实际权力之间的矛盾越来越无法回避。",
         "traitMeaning": "建立秩序的人，最终也必须面对秩序属于谁。",
-        "sources": [{"type":"later_history","label":"后世史家","author":"司马光","title":"资治通鉴","chapterOrEpisode":"汉纪相关卷次","paraphrase":"以编年方式重述曹操晚年权位扩张与继承安排。","interpretation":"后出的编年叙事帮助观察权力变化，但不与陈寿正文混同。","url":"https://zh.wikisource.org/wiki/資治通鑑","verified":true}]
+        "sources": [{"type":"later_history","label":"后世史家","author":"司马光","title":"资治通鉴","chapterOrEpisode":"汉纪相关卷次","paraphrase":"以编年方式重述曹操晚年权位扩张与继承安排。","interpretation":"后出的编年叙事帮助观察权力变化，但不与陈寿正文混同。","url":"https://zh.wikisource.org/wiki/資治通鑑","verified":false}]
       }
     ],
     "evaluations": [
       {"type":"primary_history","label":"正史定评","author":"陈寿","title":"三国志·魏书·武帝纪","chapterOrEpisode":"卷一篇末评","quote":"非常之人，超世之杰。","paraphrase":"陈寿将曹操的成业归于谋略、用人和驾驭复杂局面的能力。","interpretation":"“非常”并不只是赞美，也说明此人难以用普通臣子的尺度衡量。","url":"https://zh.wikisource.org/wiki/三國志/卷01","verified":true},
       {"type":"annotated_history","label":"注家补证","author":"裴松之","title":"三国志注所引诸书","chapterOrEpisode":"武帝纪诸注","paraphrase":"裴注保存的异闻与旧说，为陈寿正文补入严酷、猜忌、机诈与报复等复杂材料。","interpretation":"材料来源与可靠程度并不完全相同，却提醒我们：高效用人不等于对所有人宽容，建立规则也不等于规则从不服务于权力。","url":"https://zh.wikisource.org/wiki/三國志/卷01","verified":true},
       {"type":"modern_lecture","label":"现代讲述","author":"易中天","title":"易中天品三国·奸雄之谜","chapterOrEpisode":"魏武挥鞭第3集","paraphrase":"节目将曹操理解为高度复杂的人物，“奸”与“雄”并非两张无关的脸，而共同属于同一性格结构。","interpretation":"这是现代公共史表达，适合帮助普通读者进入人物，但属于主讲人的解释，不等同于史书结论。","url":"https://tv.cctv.com/2012/02/19/VIDE1394696358235264.shtml","verified":true},
-      {"type":"literary","label":"后世印象","author":"罗贯中及历代戏曲传统","title":"三国演义与舞台形象","paraphrase":"文学与戏曲强化了曹操的奸雄和白脸形象，使他成为忠奸冲突中最醒目的角色之一。","interpretation":"当后世强调汉室正统，他更接近权臣；当后世强调乱世能力，他又成为重才、敢行的英雄。形象变化本身也是历史的一部分。","url":"https://zh.wikisource.org/wiki/三國演義","verified":true}
+      {"type":"literary","label":"后世印象","author":"罗贯中及历代戏曲传统","title":"三国演义与舞台形象","paraphrase":"文学与戏曲强化了曹操的奸雄和白脸形象，使他成为忠奸冲突中最醒目的角色之一。","interpretation":"当后世强调汉室正统，他更接近权臣；当后世强调乱世能力，他又成为重才、敢行的英雄。形象变化本身也是历史的一部分。","url":"https://zh.wikisource.org/wiki/三國演義","verified":false}
     ],
     "poetry": [
       {"type":"literary","label":"人物自作","author":"曹操","title":"短歌行","quote":"周公吐哺，天下归心。","paraphrase":"诗中既有对生命短促的忧惧，也有对人才不断流失的焦虑。","interpretation":"所追求的“归心”既包含功业理想，也带着掌权者对人才和秩序的强烈占有欲。","url":"https://www.gushiwen.cn/gushiwen_c133a8e988.aspx","verified":true},
