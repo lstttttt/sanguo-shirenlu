@@ -4,6 +4,8 @@ import { historicalContent } from "../src/data/historical-content";
 assert.equal(Object.keys(historicalContent).length,12,"all twelve result characters need audited content");
 for(const [id,content] of Object.entries(historicalContent)){
   assert.ok(content,`${id}: missing content`);
+  assert.ok(content.introBridge&&content.introBridge.length>=32,`${id}: missing mirror bridge`);
+  assert.ok(content.timelineBridge&&content.timelineBridge.length>=32,`${id}: missing timeline bridge`);
   assert.equal(content.timeline.length,4,`${id}: timeline must have four nodes`);
   assert.ok(content.evaluations.length>=2,`${id}: needs at least two evaluation perspectives`);
   assert.ok(content.evaluations.some(item=>item.type==="primary_history"),`${id}: missing primary history`);
