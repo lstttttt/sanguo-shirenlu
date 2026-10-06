@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Download, ExternalLink, Link2, RotateCcw, Share2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { AncientButton } from "@/components/AncientButton";
 import { BrandMark } from "@/components/BrandMark";
 import { PageShell } from "@/components/PageShell";
@@ -13,7 +13,7 @@ import { ShareCard } from "@/components/ShareCard";
 import { characterMap } from "@/data/characters";
 import { historicalContent, type CharacterHistoricalContent, type HistoricalSource } from "@/data/historical-content";
 import { type CharacterId } from "@/data/questions";
-import { calculateResult, matchLevel, qualitative, resultMode, QUESTION_VERSION, type DimensionEvidence, type StoredResult } from "@/lib/scoring";
+import { calculateResult, QUESTION_VERSION, type StoredResult } from "@/lib/scoring";
 
 export default function ResultPage(){
   const params=useParams<{character:string}>();
@@ -26,16 +26,8 @@ export default function ResultPage(){
 
   useEffect(()=>{const loadTimer=window.setTimeout(()=>{let restored:StoredResult|null=null;try{const raw=localStorage.getItem("shirenlu-result-v4");const saved=raw?JSON.parse(raw):null;if(saved?.questionVersion===QUESTION_VERSION&&Array.isArray(saved?.answers)&&saved.answers.length===36){const recalculated=calculateResult(saved.answers);if(recalculated.explanation.primaryId===id)restored=recalculated;}}catch{}setResult(restored);setResultReady(true);if(!restored)setRevealed(true);},0);return()=>clearTimeout(loadTimer);},[id]);
   useEffect(()=>{if(!result)return;const timer=window.setTimeout(()=>setRevealed(true),700);return()=>clearTimeout(timer);},[result]);
-  const primary=result?.scores.find(s=>s.id===id);
-  const secondary=result?.scores.find(s=>s.id!==id);
-  const mode=result?resultMode(result.scores):"single"; const quality=result?.quality;
-  const topDimensions=result?.explanation.dimensionEvidence??[];
-  const allDimensions=useMemo(()=>result?.dimensions??[],[result]);
-  const lowDimension=allDimensions[allDimensions.length-1];
+  const quality=result?.quality;
   const rich=historicalContent[id];
-  const tension=useMemo(()=>findTension(allDimensions),[allDimensions]);
-  const secondarySupported=Boolean(result&&quality?.precise&&mode==="dual"&&secondary&&allDimensions.some(d=>characterMap[secondary.id].traits.slice(0,2).includes(d.name)&&d.score>=60));
-  const axisPosition=result&&secondary&&primary?Math.max(18,Math.min(82,50+(primary.score-secondary.score)*4)):50;
 
   async function share(){const text=result?`我的三国精神原型更接近${character.name}——${character.motto}。你会是谁？`:`读一页${character.name}人物志：正史、文学与后世评价如何彼此不同。`;const data={title:"三国识人录",text,url:location.href};try{if(navigator.share)await navigator.share(data);else{await navigator.clipboard.writeText(`${data.text}\n${data.url}`);showToast("分享文案已复制");}}catch{}}
   async function copyLink(){await navigator.clipboard.writeText(location.href);showToast("链接已复制");}
@@ -49,19 +41,12 @@ export default function ResultPage(){
     <header className="result-nav"><BrandMark compact/><span>人物志 · {character.era}</span><button onClick={share}><Share2 size={17}/>分享</button></header>
     <section className="result-hero" style={{"--tone":character.tone} as React.CSSProperties}>
       <motion.div className="result-hero__copy" initial={false} animate={{opacity:1,y:0}}>
-        <p>{result?"你目前更接近的三国原型":"公开人物志"}</p><h1>{character.name}</h1><div className="result-hero__title">{result?personalHeroLine(topDimensions):rich?.historyVsFiction.history??character.title}</div>
-        {result&&primary&&quality?<div className="match-level"><b>{result.explanation.confidenceLabel}</b><span>{quality.precise?`在十二位人物中，${character.name}与你这次回答呈现的行为结构最接近。`:`${character.name}只是这次回答较接近的方向，不是唯一或精确判断。`}</span>{quality.precise&&<small>内部匹配指数 {primary.score} · 不是概率</small>}</div>:<div className="match-level public-profile-note"><b>人物资料模式</b><span>这个链接没有可恢复的答题记录，因此只展示人物资料，不生成你的分数或人格判断。</span></div>}
+        <p>{result?"本次人物对照":"公开人物志"}</p><h1>{character.name}</h1><div className="result-hero__title">{rich?.heroLine??rich?.historyVsFiction.history??character.title}</div>
+        {result&&quality?<div className="match-level"><b>{result.explanation.confidenceLabel}</b><span>{quality.precise?`这一卷把你带向${character.name}的处事侧面；它只是一场局中选择的趣味对照。`:`${character.name}是这次较接近的方向，不是唯一或精确判断。`}</span></div>:<div className="match-level public-profile-note"><b>人物资料模式</b><span>这个链接没有可恢复的答题记录，因此只展示人物资料，不生成你的分数或人格判断。</span></div>}
         <p className="hero-tension">{rich?.tensionLine??`${character.strengths[0]}能帮助他打开局面，也可能让他付出${character.risks[0]}的代价。`}</p>
         <blockquote><small>为你题写 · 产品原创</small>「{rich?.originalSealLine??character.motto}」</blockquote>
       </motion.div>
       <motion.div initial={false} animate={{opacity:1,filter:"blur(0px)",y:0}}><Portrait character={character}/><p className="portrait-meta">{character.era}<span>{character.courtesy}</span></p></motion.div>
-    </section>
-
-    <section className="result-section mirror-section">
-      <SectionHead index="壹" eyebrow={result?"你的取舍":"阅读说明"} title={result?"这次选择为什么指向他":"先认识人物，再决定是否开始测试"}/>
-      {result&&quality?.message&&<div className="quality-note"><b>关于这次结果</b><p>{quality.message}</p></div>}
-      {result?<><div className="mirror-grid"><div className="mirror-prose evidence-prose"><h3>这次回答支持的判断</h3>{topDimensions.map(d=><p key={d.name}>{dimensionReading(d)}</p>)}{result.explanation.questionEvidence.length>0&&<div className="answer-evidence"><span>来自你的具体选择</span>{result.explanation.questionEvidence.map(item=><article key={item.id}><small>第 {item.id} 题 · {item.dimension}</small><p>{item.text}</p><b>你的回答：{item.answer} · {item.supports}</b></article>)}</div>}</div><div className="trait-panel"><p>与本次人物匹配相关的倾向</p>{topDimensions.map((d,i)=><div className="trait-row" key={d.name}><span>{String(i+1).padStart(2,"0")}</span><b>{d.name}</b><div><i style={{width:`${quality?.precise?d.score:qualitativeWidth(d.score)}%`}}/></div><em>{quality?.precise?d.score:qualitative(d.score)}</em></div>)}{lowDimension&&<div className="trait-low"><span>相对较弱</span><b>{lowDimension.name}</b><em>{quality?.precise?lowDimension.score:qualitative(lowDimension.score)}</em></div>}{tension&&<div className="trait-tension"><span>有证据的拉扯</span><b>{tension.label}</b></div>}</div></div>{rich&&<div className="character-mirror"><span>人物的行事风格 · 不是对你的直接断言</span><p>{characterMirrorCopy(rich)}</p></div>}</>:<div className="public-profile-callout"><p>你正在阅读静态人物志。完成问卷后，这里才会显示与你本次选择对应的维度和题目证据。</p><Link href="/test">开始测试 <span aria-hidden="true">→</span></Link></div>}
-      {secondarySupported&&secondary&&primary&&<div className="dual-note dual-analysis"><span>两个方向都接近</span><p>这次结果同时得到两组证据：{character.name}侧重{topDimensions[0]?.name}，{characterMap[secondary.id].name}则对应你另一组较突出的选择。它们表示处理问题的两种方式，不是两个人格标签。</p><div className="tension-axis" aria-label={`${character.name}与${characterMap[secondary.id].name}的相对匹配位置`}><span>{character.name}<small>{primary.score}</small></span><div className="tension-axis__track"><i style={{left:`${axisPosition}%`}}/><em style={{left:`${axisPosition}%`}}>你</em></div><span>{characterMap[secondary.id].name}<small>{secondary.score}</small></span></div></div>}
     </section>
 
     {rich?<section className="reading-hub" aria-label="人物志深入阅读"><div className="reading-hub__intro"><span>按兴趣深入</span><h2>人物经历与材料辨析</h2><p>先看摘要，再展开你关心的部分；史料与产品解读会保持分层。</p></div><details className="reading-group" open><summary><div><small>阅读一</small><b>认识这个人</b><span>四个历史节点、功与代价、人物关系</span></div><ChevronDown size={20}/></summary><div className="reading-group__body"><TimelineSection content={rich}/><AchievementSection pairs={rich.achievementCostPairs}/><RelationsSection character={character}/></div></details><details className="reading-group"><summary><div><small>阅读二</small><b>史料与演义</b><span>不同材料、后世接受与三种镜头</span></div><ChevronDown size={20}/></summary><div className="reading-group__body"><VoicesSection characterName={character.name} evaluations={rich.evaluations}/><PoetrySection poetry={rich.poetry}/><LensesSection characterName={character.name} content={rich}/></div></details></section>:<section className="result-section history-section"><SectionHead index="贰" eyebrow="史料所见" title="历史如何留下他的身影"/><div className="history-layout"><div className="story-grid">{character.story.map((item,i)=><motion.article key={item.title} initial={{opacity:0,y:12}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.25}}><span>0{i+1}</span><h3>{item.title}</h3><p>{item.text}</p></motion.article>)}</div><aside className="archive-card"><span className="archive-card__source">史料概括</span><blockquote>{character.historical}</blockquote><p>据 {character.source}</p><div><b>放到今天</b><p>{character.modern}</p></div></aside></div></section>}
@@ -74,13 +59,6 @@ export default function ResultPage(){
 }
 
 function SectionHead({index,eyebrow,title}:{index:string;eyebrow:string;title:string}){return <div className="section-head"><span>{index}</span><div><small>{eyebrow}</small><h2>{title}</h2></div></div>;}
-const dimensionCopy:Record<string,string>={"果断执行":"在需要尽快形成方向时，你这次更愿意承担拍板与推进的责任。","战略远谋":"面对眼前选择时，你多次把更长时间后的影响纳入判断。","制度秩序":"当关系与共同规则发生冲突时，你这次更看重可重复、可交接的秩序。","用人纳谏":"你这次愿意让可靠的反对意见进入决策，而不是只保留赞同声音。","仁义凝聚":"在进度与伙伴状态冲突时，你的回答更倾向先保留关系与调整机会。","忍耐克制":"面对轻视或挑衅时，你这次更能把回应延后到合适时机。","风险进取":"机会与风险同时出现时，你这次较愿意在可承受范围内主动试探。","威势强硬":"底线反复被试探时，你的回答更支持明确后果并执行。","联盟外交":"面对共同威胁时，你这次愿意与立场不同者建立有边界的合作。","忠诚原则":"当承诺与新利益冲突时，你这次更倾向先处理承诺及其代价。","灵活权变":"已有投入与新信息冲突时，你这次较能改变方法而不执着旧路径。","名望自尊":"体面、身份与现实利益冲突时，你的回答显示它们会真实影响取舍。"};
-function dimensionReading(item:DimensionEvidence){if(item.score<55)return`在与${item.name}相关的回答中，你没有形成明显一致的倾向；它只是相对更接近${item.name}的一项。`;return dimensionCopy[item.name]??`这次回答中，${item.name}是与人物匹配相关的一个方向。`;}
-function personalHeroLine(items:DimensionEvidence[]){if(items.length===0)return"这次回答只形成了一个暂时方向，仍需要更多具体情境才能解释。";if(items.length===1)return dimensionReading(items[0]);return `当${items[0].name}与${items[1].name}同时进入选择时，你这次更接近${items[0].name}所代表的处理方式。`;}
-function qualitativeWidth(score:number){return qualitative(score)==="较突出"?82:qualitative(score)==="中等"?56:30;}
-function characterMirrorCopy(content:CharacterHistoricalContent){return `${content.userMirror.decisionStyle} ${content.userMirror.cost}`.replaceAll("你的","他的").replaceAll("你","他");}
-const tensionPairs:Array<[string,string,string]>= [["果断执行","忍耐克制","立即推进 ↔ 等待时机"],["制度秩序","灵活权变","规则一致 ↔ 因势调整"],["仁义凝聚","果断执行","维系关系 ↔ 推进结果"],["忠诚原则","灵活权变","守住承诺 ↔ 调整方法"],["用人纳谏","威势强硬","听取异议 ↔ 统一行动"],["联盟外交","忠诚原则","保持合作 ↔ 守住立场"],["名望自尊","忍耐克制","维护尊严 ↔ 延后回应"],["风险进取","战略远谋","抓住窗口 ↔ 评估长远"]];
-function findTension(scores:Array<{name:string;score:number}>){let best:{label:string;distance:number}|null=null;for(const [a,b,label] of tensionPairs){const av=scores.find(item=>item.name===a)?.score;const bv=scores.find(item=>item.name===b)?.score;if(av===undefined||bv===undefined)continue;const distance=Math.abs(av-bv);if(distance<=18&&Math.max(av,bv)>=58&&(!best||distance<best.distance))best={label,distance};}return best;}
 function TimelineSection({content}:{content:CharacterHistoricalContent}){return <section className="result-section timeline-section"><SectionHead index="贰" eyebrow="人物年表" title="他如何在历史中形成自己的位置"/><div className="history-timeline">{content.timeline.map((item,index)=><article key={item.title}><div className="timeline-marker"><b>{String(index+1).padStart(2,"0")}</b></div><div className="timeline-copy"><span>{item.date}</span><h3>{item.title}</h3><p>{item.event}</p><blockquote><small>产品解读</small>{item.traitMeaning}</blockquote><details><summary>查看材料说明 <ChevronDown size={15}/></summary>{item.sources.map(source=><SourceDetail source={source} key={source.title+source.chapterOrEpisode}/>)}</details></div></article>)}</div></section>;}
 function VoicesSection({characterName,evaluations}:{characterName:string;evaluations:HistoricalSource[]}){return <section className="result-section voices-section"><SectionHead index="叁" eyebrow="众声评传" title={`不同材料，为什么给出不同的${characterName}`}/><p className="section-intro">人物不是一个结论，而是一组无法被完全合并的证据。展开卡片，可以看见材料性质、出处状态与产品解释之间的边界。</p><div className="voices-grid">{evaluations.map((source,index)=><details className={`voice-card source-${source.type}`} key={source.title}><summary><div><span>{source.label}</span><small>{source.author}{source.chapterOrEpisode?` · ${source.chapterOrEpisode}`:""}</small></div><h3>{source.title}</h3>{source.verified&&source.quote&&<blockquote>“{source.quote}”</blockquote>}<p>{source.paraphrase}</p><b>展开解读 <ChevronDown size={15}/></b></summary><div className="voice-card__expanded"><p>{source.interpretation}</p>{source.url&&<a href={source.url} target="_blank" rel="noreferrer">{source.verified?"核对具体材料":"阅读相关作品"} <ExternalLink size={14}/></a>}<small>{source.verified?"已逐项核对":"待逐项核对，不作为精确引文凭据"} · 材料 {index+1}</small></div></details>)}</div></section>;}
 function PoetrySection({poetry}:{poetry:HistoricalSource[]}){const selfAuthored=poetry.some(source=>source.label==="人物自作");return <section className="result-section poetry-section"><SectionHead index="肆" eyebrow={selfAuthored?"诗文照影":"后世接受"} title={selfAuthored?"人物自己的文字与精神线索":"后人如何书写并记住他"}/><div className="poetry-stack">{poetry.map((source,index)=><details key={source.title} open={index===0}><summary><span>{source.label} · {source.author}{source.title?`《${source.title}》`:""}</span>{source.verified&&source.quote&&<blockquote>“{source.quote}”</blockquote>}<b>{index===0?"正在展读":"展开第二则"}<ChevronDown size={15}/></b></summary><div><p>{source.paraphrase}</p><p>{source.interpretation}</p>{source.url&&<a href={source.url} target="_blank" rel="noreferrer">{source.verified?"查看具体材料":"阅读相关作品"} <ExternalLink size={14}/></a>}</div></details>)}</div></section>;}
