@@ -9,6 +9,7 @@ for(const [id,content] of Object.entries(historicalContent)){
   assert.equal(content.timeline.length,4,`${id}: timeline must have four nodes`);
   assert.ok(content.evaluations.length>=2,`${id}: needs at least two evaluation perspectives`);
   assert.ok(content.evaluations.some(item=>item.type==="primary_history"),`${id}: missing primary history`);
+  assert.ok(content.evaluations.some(item=>item.verified&&item.quote),`${id}: needs a visible verified formal-text excerpt`);
   assert.ok(content.evaluations.some(item=>item.type!=="primary_history"),`${id}: missing a contrasting perspective`);
   assert.ok(content.poetry.length>=1,`${id}: missing literary echo or reception history`);
   assert.ok(content.achievementCostPairs.length>=3,`${id}: needs three achievement/cost pairs`);
