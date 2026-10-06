@@ -1,6 +1,7 @@
 import raw from "./historical-content.json";
 import type { CharacterId } from "./questions";
 import { expandedHistoricalContent } from "./historical-content-expanded";
+import { longformEvents, longformVoiceNotes } from "./result-longform";
 
 export type SourceType="primary_history"|"annotated_history"|"later_history"|"literary"|"modern_lecture"|"product_copy";
 export interface HistoricalSource{type:SourceType;label:string;author?:string;title:string;chapterOrEpisode?:string;quote?:string;paraphrase:string;interpretation:string;url?:string;verified:boolean}
@@ -29,5 +30,6 @@ const bridgeCopy:Record<CharacterId,{introBridge:string;timelineBridge:string}>=
   yuanshao:{introBridge:"你能聚起资源、声望和不同声音；越是如此，越需要明确何时该完成取舍。规模若没有决策规则，也会被自身重量拖住。",timelineBridge:"盟主、河北之主、官渡失利与身后分裂，袁绍的路不该只剩一次失败，而应看见聚势与失序如何相互发生。"},
   lvbu:{introBridge:"你对机会反应极快，也有冲开局面的本领。每次转身都会留下旧盟友的记忆，下一次机会因此先被衡量的往往是信用。",timelineBridge:"从丁原、董卓到兖徐与下邳，他不断改变战场，却没能让伙伴持续相信自己会站在同一边。"},
 };
-const allContent={...(raw as Partial<Record<CharacterId,CharacterHistoricalContent>>),...expandedHistoricalContent} as Record<CharacterId,CharacterHistoricalContent>;
+const baseContent={...(raw as Partial<Record<CharacterId,CharacterHistoricalContent>>),...expandedHistoricalContent} as Record<CharacterId,CharacterHistoricalContent>;
+const allContent=Object.fromEntries(Object.entries(baseContent).map(([id,content])=>{const key=id as CharacterId;return [key,{...content,timeline:content.timeline.map((item,index)=>({...item,event:longformEvents[key][index]??item.event})),evaluations:content.evaluations.map((source,index)=>index===0?{...source,paraphrase:longformVoiceNotes[key]??source.paraphrase}:source)}];})) as Record<CharacterId,CharacterHistoricalContent>;
 export const historicalContent=Object.fromEntries(Object.entries(allContent).map(([id,content])=>[id,{...content,...(content.introBridge?{}:bridgeCopy[id as CharacterId])}])) as Record<CharacterId,CharacterHistoricalContent>;
