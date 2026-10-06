@@ -1,64 +1,63 @@
 import { characters } from "@/data/characters";
-import { dimensions, questions, type CharacterId } from "@/data/questions";
+import { dimensions, questions, type AnswerId, type CharacterId } from "@/data/questions";
 import rawProfiles from "@/data/profiles.json";
 
+export const QUESTION_VERSION = "scenario-v1";
 export type ScoreResult = { id: CharacterId; score: number; raw: number };
-export type QualityFlag = "affirming" | "neutral" | "contradictory" | null;
+export type QualityFlag = "neutral" | "contradictory" | null;
 export type DimensionEvidence = { name:string; score:number; label:"较突出"|"中等"|"较弱"; questionIds:number[] };
 export type QuestionEvidence = { id:number; text:string; answer:string; dimension:string; supports:string };
 export type StoredResult = {
-  answers: number[]; scores: ScoreResult[]; dimensions: { name: string; score: number }[];
+  questionVersion: typeof QUESTION_VERSION; answers: AnswerId[]; scores: ScoreResult[]; dimensions: { name: string; score: number }[];
   quality: { flag: QualityFlag; message: string; contradictions: number; precise: boolean };
-  explanation:{primaryId:CharacterId;runnerUpId:CharacterId;dimensionEvidence:DimensionEvidence[];questionEvidence:QuestionEvidence[];confidenceLabel:string};
+  explanation:{primaryId:CharacterId;runnerUpId:CharacterId;dimensionEvidence:DimensionEvidence[];questionEvidence:QuestionEvidence[];confidenceLabel:string;evidenceQuestionIds:number[];copyVariant:"conditional"|"static"|"uncertain"};
   createdAt: number;
 };
 type Profile = { core: [number,number]; auxiliary: [number,number]; conflict: number; weakness: number };
-
 const profiles=rawProfiles as Record<CharacterId,Profile>;
 
-export function calculateResult(answers: number[]): StoredResult {
-  const dimensionScores = dimensions.map((name, dimension) => {
-    const items = questions.map((q,i) => q.dimension === dimension ? {value:answers[i]??3,reverse:q.reverse} : null).filter((v):v is {value:number;reverse:boolean|undefined}=>v!==null);
-    const adjusted=items.map(item=>item.reverse?6-item.value:item.value);
-    const average=adjusted.reduce((sum,value)=>sum+value,0)/adjusted.length;
-    return {name,score:Math.round((average-1)/4*100)};
+export function calculateResult(input: AnswerId[]): StoredResult {
+  const answers=input.map(answer=>answer==="A"||answer==="B"||answer==="C"?answer:"B") as AnswerId[];
+  const dimensionScores=dimensions.map((name,dimension)=>{
+    const items=questions.filter(q=>q.dimension===dimension);
+    const values=items.map(q=>q.options.find(option=>option.id===answers[q.id-1])?.score??1);
+    return {name,score:Math.round(values.reduce<number>((sum,value)=>sum+value,0)/Math.max(1,values.length)/2*100)};
   });
   const scores=characters.map(character=>{
     const p=profiles[character.id]; const c=dimensionScores.map(d=>(d.score-50)/50);
     const raw=.30*c[p.core[0]]+.25*c[p.core[1]]+.15*c[p.auxiliary[0]]+.10*c[p.auxiliary[1]]-.10*c[p.conflict]-.10*c[p.weakness];
     return {id:character.id,score:Math.max(0,Math.min(100,Math.round(50+50*raw))),raw};
   }).sort((a,b)=>b.score-a.score);
-  const quality=assessQuality(answers);
-  const primaryId=scores[0].id; const runnerUpId=scores[1].id; const profile=profiles[primaryId];
-  const relevant=[...profile.core,...profile.auxiliary]
-    .map(index=>dimensionScores[index])
-    .sort((a,b)=>b.score-a.score)
-    .filter((item,index)=>item.score>=55||index===0)
-    .slice(0,3);
+  const quality=assessQuality(answers,dimensionScores);
+  const primaryId=scores[0].id, runnerUpId=scores[1].id, profile=profiles[primaryId];
+  const coreEvidence=profile.core.filter(index=>dimensionScores[index].score>=50).length;
+  const gap=scores[0].score-scores[1].score;
+  const certain=quality.precise&&coreEvidence===2&&gap>=6;
+  const relevant=[...profile.core,...profile.auxiliary].map(index=>dimensionScores[index]).sort((a,b)=>b.score-a.score).slice(0,3);
   const dimensionEvidence=relevant.map(item=>({name:item.name,score:item.score,label:qualitative(item.score),questionIds:questions.filter(q=>q.dimension===dimensions.indexOf(item.name as typeof dimensions[number])).map(q=>q.id)}));
   const questionEvidence:QuestionEvidence[]=[];
-  for(const dimension of dimensionEvidence){
-    const dimensionIndex=dimensions.indexOf(dimension.name as typeof dimensions[number]);
-    const candidates=questions.map((q,index)=>({q,index,value:answers[index],adjusted:q.reverse?6-(answers[index]??3):(answers[index]??3)})).filter(item=>item.q.dimension===dimensionIndex&&item.adjusted>=4).sort((a,b)=>b.adjusted-a.adjusted);
-    const item=candidates[0]; if(item)questionEvidence.push({id:item.q.id,text:item.q.text,answer:answerLabel(item.value),dimension:dimension.name,supports:item.q.reverse?"你这次没有选择该维度的反向倾向":"你这次更认同这种处理方式"});
-    if(questionEvidence.length===2)break;
+  for(const evidence of dimensionEvidence){
+    const candidate=questions
+      .filter(question=>question.dimension===dimensions.indexOf(evidence.name as typeof dimensions[number]))
+      .map(question=>({question,answer:answers[question.id-1]}))
+      .filter(({question,answer})=>(question.options.find(option=>option.id===answer)?.score??0)>=1)
+      .sort((a,b)=>(b.question.options.find(option=>option.id===b.answer)?.score??0)-(a.question.options.find(option=>option.id===a.answer)?.score??0))[0];
+    if(candidate)questionEvidence.push({id:candidate.question.id,text:candidate.question.text,answer:formatAnswer(candidate.question.id,candidate.answer),dimension:evidence.name,supports:`这次选择在${evidence.name}上留下了证据`});
   }
-  const gap=scores[0].score-scores[1].score;
-  const confidenceLabel=!quality.precise?"倾向性结果":gap<=5?"两个方向都接近":gap<=12?"主要方向较清晰":"当前方向较清晰";
-  return {answers,scores,dimensions:[...dimensionScores].sort((a,b)=>b.score-a.score),quality,explanation:{primaryId,runnerUpId,dimensionEvidence,questionEvidence,confidenceLabel},createdAt:Date.now()};
+  const confidenceLabel=!quality.precise||coreEvidence<2?"更接近的一种方向":gap<6?"两个方向都接近":gap<13?"主要方向较清晰":"当前方向较清晰";
+  return {questionVersion:QUESTION_VERSION,answers,scores,dimensions:[...dimensionScores].sort((a,b)=>b.score-a.score),quality,explanation:{primaryId,runnerUpId,dimensionEvidence,questionEvidence,confidenceLabel,evidenceQuestionIds:questionEvidence.map(item=>item.id),copyVariant:certain?"conditional":quality.precise?"static":"uncertain"},createdAt:Date.now()};
 }
 
-export function assessQuality(answers:number[]):StoredResult["quality"] {
-  const valid=answers.filter(value=>value>=1&&value<=5);if(valid.length<30)return{flag:"neutral",message:"有效回答不足，当前只能展示人物资料与非常有限的方向提示。",contradictions:0,precise:false};
-  const high=valid.filter(v=>v>=4).length/valid.length; const middle=valid.filter(v=>v===3).length/valid.length; let contradictions=0;
-  for(let dimension=0;dimension<12;dimension++){const directIndex=questions.findIndex(q=>q.dimension===dimension&&q.kind==="behavior");const reverseIndex=questions.findIndex(q=>q.dimension===dimension&&q.kind==="reverse");const a=answers[directIndex],b=answers[reverseIndex];if(a&&b&&((a>=4&&b>=4)||(a<=2&&b<=2)))contradictions++;}
-  if(high>.8)return{flag:"affirming",message:"你的回答整体偏向肯定，因此多个维度同时较高。以下结果更适合作为一种方向，而不是唯一判断。",contradictions,precise:false};
-  if(middle>.7)return{flag:"neutral",message:"你在多数问题中保留了判断，当前轮廓较为均衡。可以换一个更具体的生活阶段再次作答。",contradictions,precise:false};
-  if(contradictions>=4)return{flag:"contradictory",message:"你的部分选择呈现出相反倾向，可能说明你会随情境调整。结果将保留方向，不显示精确分值。",contradictions,precise:false};
-  return{flag:null,message:"",contradictions,precise:true};
+export function assessQuality(answers:AnswerId[], dimensionScores?:Array<{score:number}>):StoredResult["quality"] {
+  if(answers.length<36)return {flag:"neutral",message:"回答尚未完整，当前只展示人物资料与有限的方向提示。",contradictions:0,precise:false};
+  const counts={A:0,B:0,C:0};answers.forEach(answer=>counts[answer]++);
+  const spread=Math.max(counts.A,counts.B,counts.C)-Math.min(counts.A,counts.B,counts.C);
+  const flat=dimensionScores?.filter(d=>d.score===50).length??0;
+  if(flat>=8)return {flag:"neutral",message:"你的取舍在许多局面里保持均衡，因此结果更适合作为可继续探索的方向。",contradictions:0,precise:false};
+  if(spread>=30)return {flag:"contradictory",message:"你反复选择同一种处理方式；这会压低情境间的差异，结果不显示假精确值。",contradictions:0,precise:false};
+  return {flag:null,message:"",contradictions:0,precise:true};
 }
-
-export function resultMode(scores: ScoreResult[]){const gap=scores[0].score-scores[1].score;return gap<=5?"dual":gap<=12?"secondary":"single";}
-export function matchLevel(score:number,precise=true){if(!precise)return"方向接近";if(score>=75)return"高度契合";if(score>=64)return"明显接近";if(score>=55)return"部分相似";return"轮廓均衡";}
+export function resultMode(scores:ScoreResult[]){const gap=scores[0].score-scores[1].score;return gap<6?"dual":gap<13?"secondary":"single";}
+export function matchLevel(score:number,precise=true){if(!precise)return"方向接近";if(score>=75)return"高度接近";if(score>=64)return"明显接近";if(score>=55)return"部分接近";return"轮廓均衡";}
 export function qualitative(score:number):"较突出"|"中等"|"较弱"{return score>=67?"较突出":score>=42?"中等":"较弱";}
-function answerLabel(value:number){return ["","很不像我","不太像我","说不准","比较像我","很像我"][value]||"未作答";}
+export function formatAnswer(questionId:number, answer:AnswerId){const option=questions.find(q=>q.id===questionId)?.options.find(o=>o.id===answer);return `${answer} · ${option?.text??"未作答"}`;}
