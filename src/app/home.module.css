@@ -1,0 +1,125 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100svh;
+  background: var(--paper);
+}
+
+.cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(64px, 16svh, 144px) 24px 32px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(3.25rem, 8vw, 6.5rem);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: 0.05em;
+  text-indent: 0.05em;
+  text-wrap: balance;
+}
+
+.title::after {
+  display: block;
+  inline-size: 40px;
+  block-size: 2px;
+  margin: clamp(20px, 4vw, 32px) auto 0;
+  background: var(--seal);
+  content: "";
+}
+
+.intro {
+  max-inline-size: 40rem;
+  margin: 24px 0 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1.0625rem, 2.45vw, 1.25rem);
+  line-height: 1.85;
+}
+
+.sentence {
+  display: block;
+}
+
+.sentence + .sentence {
+  margin-block-start: 4px;
+}
+
+.clause {
+  display: inline-block;
+  max-inline-size: 100%;
+}
+
+.meta {
+  margin: 24px 0 0;
+  color: var(--muted);
+  font: 0.875rem/1.6 var(--sans);
+}
+
+.start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-block-size: 56px;
+  margin-block-start: 24px;
+  padding: 8px 28px;
+  border: 1px solid var(--seal);
+  background: var(--seal);
+  color: var(--paper);
+  box-shadow: inset 0 0 0 3px var(--seal), inset 0 0 0 4px rgba(247, 243, 233, 0.55);
+  font: 600 1rem/1.5 var(--sans);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+}
+
+.start svg {
+  flex: none;
+}
+
+.start:hover {
+  background: color-mix(in srgb, var(--seal), var(--ink) 20%);
+}
+
+.start:active {
+  background: color-mix(in srgb, var(--seal), var(--ink) 34%);
+}
+
+.start:focus-visible {
+  outline: 2px solid var(--seal);
+  outline-offset: 4px;
+}
+
+.landscape {
+  position: relative;
+  flex: 1 0 clamp(176px, 25svh, 288px);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ink {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 50%;
+  display: block;
+  inline-size: max(100%, 640px);
+  block-size: min(100%, 360px);
+  transform: translateX(-50%);
+}
+
+@media (max-width: 600px) {
+  .cover {
+    padding-inline: 20px;
+  }
+
+  .ink {
+    block-size: min(100%, 240px);
+    opacity: 0.78;
+  }
+}

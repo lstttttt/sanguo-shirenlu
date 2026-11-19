@@ -1,29 +1,41 @@
-export function InkLandscape({ className = "" }: { className?: string }) {
+export function InkLandscape({ className }: { className?: string }) {
   return (
-    <svg className={`ink-landscape ${className}`} viewBox="0 0 1200 700" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <svg
+      className={className}
+      viewBox="0 280 1200 420"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <defs>
-        <linearGradient id="inkFade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#52636a" stopOpacity="0" />
-          <stop offset="1" stopColor="#1c1b18" stopOpacity=".82" />
+        <linearGradient id="ridge-ink" x2="0" y2="1">
+          <stop stopColor="#727B6B" stopOpacity=".19" />
+          <stop offset="1" stopColor="#4D574A" stopOpacity=".38" />
         </linearGradient>
-        <filter id="soft"><feGaussianBlur stdDeviation="6" /></filter>
+        <linearGradient id="foreground-ink" x2="0" y2="1">
+          <stop stopColor="#5A6356" stopOpacity=".30" />
+          <stop offset="1" stopColor="#777C69" stopOpacity=".24" />
+        </linearGradient>
+        <filter id="ridge-mist"><feGaussianBlur stdDeviation="6" /></filter>
       </defs>
-      <path d="M0 520 Q120 380 245 518 T490 500 T720 475 T960 510 T1200 430 V700 H0Z" fill="#52636a" opacity=".12" filter="url(#soft)" />
-      <path d="M-20 606 Q100 460 205 565 Q320 390 420 570 Q530 440 650 575 Q790 390 900 570 Q1030 455 1230 560 V700 H-20Z" fill="url(#inkFade)" opacity=".35" />
-      <path d="M0 635 Q170 560 315 625 T590 610 T860 620 T1200 580 V700 H0Z" fill="#1c1b18" opacity=".34" />
-      <g stroke="#1c1b18" strokeWidth="3" opacity=".42">
-        <path d="M900 570v-190m0 45-52-48m52 78 62-55m-62 4-22-88m22 64 43-105" />
-        <path d="M180 606v-120m0 30-35-35m35 53 47-44m-47 3-14-58m14 42 33-75" />
+      <path
+        d="M0 520 Q120 380 245 518 T490 500 T720 475 T960 510 T1200 430 V700 H0Z"
+        fill="#687662"
+        opacity=".14"
+        filter="url(#ridge-mist)"
+      />
+      <path
+        d="M-20 606 Q100 460 205 565 Q320 390 420 570 Q530 440 650 575 Q790 390 900 570 Q1030 455 1230 560 V700 H-20Z"
+        fill="url(#ridge-ink)"
+      />
+      <path
+        d="M0 635 Q170 560 315 625 T590 610 T860 620 T1200 580 V700 H0Z"
+        fill="url(#foreground-ink)"
+      />
+      <g fill="none" stroke="#4D574A" strokeWidth="3" strokeLinecap="round" opacity=".32">
+        <path d="M900 621V380m0 45-52-48m52 78 62-55m-62 4-22-88m22 64 43-105" />
+        <path d="M180 606V486m0 30-35-35m35 53 47-44m-47 3-14-58m14 42 33-75" />
       </g>
-      <g fill="#9b2c2c" opacity=".55"><circle cx="897" cy="312" r="4"/><circle cx="941" cy="275" r="3"/><circle cx="177" cy="430" r="3"/></g>
-      <g fill="none" stroke="#9b2c2c" strokeWidth="1.4" strokeDasharray="5 7" opacity=".45">
-        <path d="M235 498Q410 355 575 492T910 408"/><path d="M470 540Q620 390 805 510"/>
-      </g>
-      <g fill="#1c1b18" opacity=".56" fontFamily="serif" fontSize="14" letterSpacing="3">
-        <text x="214" y="486">成都 · 蜀</text><text x="548" y="480">襄阳</text><text x="870" y="396">建业 · 吴</text><text x="455" y="554">许都 · 魏</text>
-      </g>
-      <g stroke="#1c1b18" strokeWidth="1" opacity=".35"><path d="M160 650h880"/><path d="M280 644v12M540 644v12M800 644v12"/></g>
-      <g fill="#1c1b18" opacity=".48" fontFamily="sans-serif" fontSize="11"><text x="250" y="674">184</text><text x="510" y="674">220</text><text x="770" y="674">280</text></g>
     </svg>
   );
 }

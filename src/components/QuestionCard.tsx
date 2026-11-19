@@ -1,17 +1,53 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { Check } from "lucide-react";
 import { type AnswerId, type Question } from "@/data/questions";
+import styles from "./QuestionCard.module.css";
 
-export function QuestionCard({ question, value, keyboardValue, direction, onAnswer, onKeyboardValue }: { question: Question; value?: AnswerId; keyboardValue?:AnswerId; direction: number; onAnswer: (value:AnswerId) => void; onKeyboardValue:(value:AnswerId)=>void }) {
-  return <AnimatePresence mode="wait" custom={direction}><motion.article key={question.id} custom={direction} initial={false} animate={{opacity:1,x:0,filter:"blur(0px)"}} exit={{opacity:0,x:direction*-20,filter:"blur(3px)"}} transition={{duration:.21,ease:[.22,1,.36,1]}} className="question-card">
-    <div className="question-card__index"><span>第</span><b>{question.id}</b><span>题</span></div>
-    <h1>{question.text}</h1>
-    <p className="question-card__prompt">选择你愿意承担其后果的做法。</p>
-    <div className="answer-list scenario-options" role="radiogroup" aria-label="请选择一种做法">
-      {question.options.map(option=><motion.button key={option.id} initial={false} animate={{opacity:1,y:0}} className={`answer-option ${value===option.id?"is-selected":""} ${keyboardValue===option.id?"is-keyboard":""}`} role="radio" aria-checked={value===option.id} onClick={()=>onAnswer(option.id)} onFocus={()=>onKeyboardValue(option.id)} onMouseEnter={()=>onKeyboardValue(option.id)}>
-        <span className="answer-option__number">{option.id}</span><b>{option.text}</b><i aria-hidden="true" />
-      </motion.button>)}
-    </div>
-  </motion.article></AnimatePresence>;
+type QuestionCardProps = {
+  question: Question;
+  answer?: AnswerId;
+  keyboardChoice: AnswerId;
+  locked: boolean;
+  onAnswer: (value: AnswerId) => void;
+  onFocusChoice: (value: AnswerId) => void;
+};
+
+export function QuestionCard({ question, answer, keyboardChoice, locked, onAnswer, onFocusChoice }: QuestionCardProps) {
+  return (
+    <article className={styles.card}>
+      <h1 id="question-title" tabIndex={-1}>{question.text}</h1>
+      <ul className={styles.options}>
+        {question.options.map((option) => {
+          const selected = answer === option.id;
+
+          return (
+            <li key={option.id}>
+              <button
+                type="button"
+                className={styles.option}
+                data-option={option.id}
+                data-selected={selected}
+                data-keyboard-choice={keyboardChoice === option.id}
+                aria-disabled={locked || undefined}
+                onClick={(event) => {
+                  if (event.detail <= 1) onAnswer(option.id);
+                }}
+                onFocus={() => onFocusChoice(option.id)}
+              >
+                <span className={styles.letter}>{option.id}</span>
+                <span>{option.text}</span>
+                {selected && (
+                  <span className={styles.selected}>
+                    <Check size={20} aria-hidden="true" />
+                    <span className={styles.visuallyHidden}>已选</span>
+                  </span>
+                )}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </article>
+  );
 }

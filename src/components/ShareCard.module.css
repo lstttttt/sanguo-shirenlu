@@ -1,0 +1,129 @@
+.section {
+  margin-block-start: 48px;
+  padding-block-start: 32px;
+  border-top: 1px solid var(--line);
+}
+
+.section > h2 {
+  margin: 0 0 24px;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 310px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(20px, 5vw, 48px);
+}
+
+.preview {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  border: 1px solid var(--line);
+  font-family: var(--serif);
+}
+
+.details {
+  font-family: var(--sans);
+}
+
+.note {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 15px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.actions .primary {
+  background: var(--seal);
+  color: #F7F3E9;
+}
+
+.actions .secondary {
+  border-color: var(--seal);
+  color: var(--seal);
+}
+
+.actions .tertiary {
+  color: var(--seal);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.actions button:focus-visible {
+  outline: 2px solid var(--seal);
+  outline-offset: 3px;
+}
+
+.actions button[aria-disabled="true"] {
+  cursor: wait;
+}
+
+.actions button[aria-busy="true"] {
+  opacity: 0.7;
+}
+
+.status {
+  min-block-size: 1.6em;
+  margin: 4px 0 0;
+  color: var(--seal);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (hover: hover) {
+  .primary:hover:not([aria-disabled="true"]) {
+    filter: brightness(0.9);
+  }
+
+  .secondary:hover:not([aria-disabled="true"]),
+  .tertiary:hover:not([aria-disabled="true"]) {
+    background: color-mix(in srgb, var(--seal) 8%, transparent);
+  }
+}
+
+@media (max-width: 600px) {
+  .section {
+    margin-block-start: 40px;
+    padding-block-start: 24px;
+  }
+
+  .section > h2 {
+    font-size: 23px;
+  }
+
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .actions {
+    display: grid;
+  }
+
+  .actions .tertiary {
+    justify-self: start;
+  }
+}

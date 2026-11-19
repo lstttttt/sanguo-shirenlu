@@ -1,7 +1,283 @@
-import { type Character } from "@/data/characters";
+"use client";
 
-const themes:Record<string,{sky:string;land:string;motif:string}>= {
- caocao:{sky:"#282d2a",land:"乌巢火光 · 军令",motif:"M90 720 C250 610 390 710 540 570 C710 430 840 620 990 490 L990 900 L90 900Z"},liubei:{sky:"#53604d",land:"蜀道 · 旧旗",motif:"M90 790 L310 510 L470 710 L650 430 L990 730 L990 900 L90 900Z"},sunquan:{sky:"#334d5a",land:"江潮 · 断案",motif:"M90 690 Q270 600 450 690 T810 690 T990 690 L990 900 L90 900Z"},sunce:{sky:"#426476",land:"渡江 · 帆影",motif:"M90 720 Q360 610 600 710 T990 680 L990 900 L90 900Z"},zhugeliang:{sky:"#65705d",land:"案牍 · 五丈原",motif:"M90 760 L300 620 L500 700 L670 540 L990 720 L990 900 L90 900Z"},zhouyu:{sky:"#5b3f35",land:"赤壁 · 江风",motif:"M90 700 Q250 550 420 690 T760 650 T990 700 L990 900 L90 900Z"},lusu:{sky:"#526976",land:"江上 · 盟书",motif:"M90 720 Q310 640 540 730 T990 700 L990 900 L90 900Z"},guanyu:{sky:"#415241",land:"荆州 · 长刀",motif:"M90 690 L260 570 L420 660 L610 480 L990 700 L990 900 L90 900Z"},zhangfei:{sky:"#56483b",land:"长坂 · 断桥",motif:"M90 740 Q310 620 500 740 T990 700 L990 900 L90 900Z"},simayi:{sky:"#252c37",land:"城阙 · 夜色",motif:"M90 700 L280 540 L420 680 L590 480 L750 660 L990 570 L990 900 L90 900Z"},yuanshao:{sky:"#5a5443",land:"河北 · 旌旗",motif:"M90 700 L280 560 L500 700 L700 530 L990 680 L990 900 L90 900Z"},lvbu:{sky:"#514342",land:"白门楼 · 马影",motif:"M90 710 L260 590 L440 690 L620 500 L990 680 L990 900 L90 900Z"}
+import { Download, Link2, Share2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { editorialCopy as copy } from "@/data/editorial";
+import type { CharacterId } from "@/data/questions";
+import styles from "./ShareCard.module.css";
+
+const CARD_WIDTH = 1080;
+const CARD_HEIGHT = 1440;
+const CARD_MARGIN = 96;
+const LINE_LENGTH = 18;
+const SITE_HOST = "sanguo-shirenlu.vercel.app";
+const SVG_NS = "http://www.w3.org/2000/svg";
+const EXPORT_FONT = "SanguoCardSerif";
+const CARD_PALETTE = {
+  paper: "#F7F3E9",
+  ink: "#262922",
+  muted: "#555B50",
+  seal: "#873E34",
+  line: "#C9C2B1",
 };
-const lines:Record<string,string>={caocao:"乱局未定，先把人和路重新排好",liubei:"走过败局，仍有人愿与你同行",sunquan:"守住江东，也守住下一回合",sunce:"渡江那一步，先机与险路同在",zhugeliang:"让秩序留下，让未竟有人接续",zhouyu:"看清水与火，然后亲自担责",lusu:"江上可结盟，边界要写明",guanyu:"报了旧恩，再赴一生的约",zhangfei:"长坂敢断后，江州也识人",simayi:"不随挑衅出手，等到时机成形",yuanshao:"曾聚河北之势，也困于最后一断",lvbu:"阵前有勇，白门楼前问信用"};
-export function ShareCard({character,isPersonal}:{character:Character;isPersonal:boolean}){const theme=themes[character.id];return <svg id="share-card-svg" viewBox="0 0 1080 1440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={`${character.name}人物笺`}><defs><linearGradient id="sky" x1="0" x2="0" y2="1"><stop stopColor={theme.sky}/><stop offset="1" stopColor="#e9dfc8"/></linearGradient><filter id="paper"><feTurbulence baseFrequency=".7" numOctaves="2" result="noise"/><feColorMatrix in="noise" type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .05"/></feComponentTransfer></filter></defs><rect width="1080" height="1440" fill="#eee5d4"/><rect width="1080" height="1440" filter="url(#paper)"/><text x="72" y="96" fill="#6d302a" fontSize="25" letterSpacing="8">三 国 识 人 录</text><text x="1008" y="96" fill="#4b4d49" fontSize="22" textAnchor="end">{character.era} · {character.title}</text><rect x="72" y="140" width="936" height="790" rx="5" fill="url(#sky)"/><path d={theme.motif} fill="#25312d" opacity=".55"/><path d={theme.motif} transform="translate(0,70)" fill="#17201e" opacity=".52"/><circle cx="540" cy="505" r="175" fill="#dbc5a0" opacity=".4"/><path d="M430 760 L455 465 Q540 365 625 465 L650 760Z" fill="#1b2422"/><path d="M470 470 Q540 350 610 470 L595 535 L485 535Z" fill="#c7aa7c"/><path d="M510 520 Q540 540 570 520 L585 630 L495 630Z" fill="#7e302d" opacity=".8"/><text x="540" y="860" fill="#f0e7d5" fontSize="28" textAnchor="middle" letterSpacing="7">{theme.land}</text><line x1="72" x2="1008" y1="1010" y2="1010" stroke="#b9a98f"/><text x="72" y="1080" fill="#202522" fontSize="82" fontWeight="bold">{character.name}</text><text x="76" y="1126" fill="#6d302a" fontSize="25">{isPersonal?"我的原型 · 你的选择":"公开人物志"}</text><text x="72" y="1202" fill="#343633" fontSize="34">{lines[character.id]}</text><rect x="72" y="1250" width="176" height="48" fill="#8d3430"/><text x="160" y="1282" fill="#f4ebd9" fontSize="20" textAnchor="middle">{isPersonal?"本次选择":"人物资料"}</text><text x="72" y="1365" fill="#555752" fontSize="22">sanguo-shirenlu.vercel.app</text></svg>}
+
+type CardCharacter = {
+  name: string;
+  courtesy: string;
+  chapterTitle: string;
+  frontLine: string;
+};
+
+type Action = "save" | "share" | "copy";
+
+function wrapFrontLine(text: string) {
+  const characters = Array.from(text);
+  const lines: string[] = [];
+  const breakAfter = /[，。；！？」』]/u;
+  const keepAtEnd = /[，。、；：！？」』》）]/u;
+
+  for (let start = 0; start < characters.length; ) {
+    let end = Math.min(start + LINE_LENGTH, characters.length);
+    if (end < characters.length) {
+      const remaining = characters.length - start;
+      const lineCount = Math.ceil(remaining / LINE_LENGTH);
+      const evenBreak = start + Math.ceil(remaining / lineCount);
+      const earliestBreak = Math.max(evenBreak - 4, characters.length - (lineCount - 1) * LINE_LENGTH);
+      const latestBreak = Math.min(evenBreak + 4, end);
+      let phraseBreak: number | undefined;
+      for (let cut = earliestBreak; cut <= latestBreak; cut++) {
+        if (
+          breakAfter.test(characters[cut - 1]) &&
+          !keepAtEnd.test(characters[cut]) &&
+          (phraseBreak === undefined || Math.abs(cut - evenBreak) < Math.abs(phraseBreak - evenBreak))
+        ) {
+          phraseBreak = cut;
+        }
+      }
+      end = phraseBreak ?? Math.min(end, evenBreak + 1);
+      // Keep punctuation with the preceding phrase when a line must break mid-phrase.
+      while (end > start + 1 && keepAtEnd.test(characters[end])) end--;
+    }
+    lines.push(characters.slice(start, end).join(""));
+    start = end;
+  }
+  return lines;
+}
+
+function readAsDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function renderPng(svg: SVGSVGElement) {
+  await document.fonts.ready;
+  const font = await fetch("/fonts/noto-serif-sc-card.woff2");
+  if (!font.ok) throw new Error("Card font unavailable");
+
+  const standaloneSvg = svg.cloneNode(true) as SVGSVGElement;
+  const fontSource = await readAsDataUrl(await font.blob());
+  const fontUrl = `url("${fontSource}")`;
+  await new FontFace(EXPORT_FONT, fontUrl, { weight: "400 700" }).load();
+  const style = document.createElementNS(SVG_NS, "style");
+  style.textContent = `@font-face {
+    font-family: ${EXPORT_FONT};
+    font-weight: 400 700;
+    src: ${fontUrl} format("woff2");
+  }`;
+  standaloneSvg.prepend(style);
+  standaloneSvg.setAttribute("font-family", `${EXPORT_FONT}, serif`);
+  const markup = new XMLSerializer().serializeToString(standaloneSvg);
+  const imageUrl = URL.createObjectURL(new Blob([markup], { type: "image/svg+xml;charset=utf-8" }));
+
+  try {
+    const image = new Image();
+    image.src = imageUrl;
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = CARD_WIDTH;
+    canvas.height = CARD_HEIGHT;
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Canvas unavailable");
+
+    context.drawImage(image, 0, 0, CARD_WIDTH, CARD_HEIGHT);
+    return await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (png) => (png ? resolve(png) : reject(new Error("PNG encoding failed"))),
+        "image/png",
+      );
+    });
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
+}
+
+function downloadPng(png: Blob, filename: string) {
+  const url = URL.createObjectURL(png);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
+}
+
+export function ShareCard({
+  character,
+  characterId,
+  isPersonal,
+}: {
+  character: CardCharacter;
+  characterId: CharacterId;
+  isPersonal: boolean;
+}) {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const activeAction = useRef<Action | null>(null);
+  const [pending, setPending] = useState<Action | null>(null);
+  const [status, setStatus] = useState("");
+  const { name, courtesy, chapterTitle, frontLine } = character;
+  const cardLabel = isPersonal ? copy.personalCardLabel : copy.publicCardLabel;
+  const lines = wrapFrontLine(frontLine);
+
+  function publicUrl() {
+    return new URL(`/result/${characterId}`, window.location.origin).href;
+  }
+
+  async function copyPublicUrl() {
+    await navigator.clipboard.writeText(publicUrl());
+    return copy.copied;
+  }
+
+  async function sharePublicPage() {
+    const data = {
+      title: copy.homeTitle,
+      text: `${name} · ${chapterTitle}\n${frontLine}`,
+      url: publicUrl(),
+    };
+    if (navigator.share && (!navigator.canShare || navigator.canShare(data))) {
+      try {
+        await navigator.share(data);
+        return "";
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return "";
+      }
+    }
+    return copyPublicUrl();
+  }
+
+  async function saveCard() {
+    if (!svgRef.current) throw new Error("Card preview unavailable");
+    const png = await renderPng(svgRef.current);
+    downloadPng(png, `${copy.homeTitle}-${name}.png`);
+    return copy.imageReady;
+  }
+
+  async function perform(action: Action, task: () => Promise<string>) {
+    if (activeAction.current) return;
+    activeAction.current = action;
+    setPending(action);
+    setStatus("");
+    try {
+      setStatus(await task());
+    } catch {
+      setStatus(action === "save" ? copy.imageError : copy.copyError);
+    } finally {
+      activeAction.current = null;
+      setPending(null);
+    }
+  }
+
+  const cardRight = CARD_WIDTH - CARD_MARGIN;
+  return (
+    <section id="share" className={styles.section} aria-labelledby="share-heading">
+      <h2 id="share-heading">{copy.shareHeading}</h2>
+      <div className={styles.layout}>
+        <svg
+          id="share-card-svg"
+          ref={svgRef}
+          className={styles.preview}
+          xmlns={SVG_NS}
+          width={CARD_WIDTH}
+          height={CARD_HEIGHT}
+          viewBox={`0 0 ${CARD_WIDTH} ${CARD_HEIGHT}`}
+          role="img"
+          aria-label={`${cardLabel}，${name}，字${courtesy}，${chapterTitle}。${frontLine}`}
+          fill={CARD_PALETTE.ink}
+        >
+          <rect width={CARD_WIDTH} height={CARD_HEIGHT} fill={CARD_PALETTE.paper} />
+          <text x={CARD_MARGIN} y="131" fontSize="36" fontWeight="600" fill={CARD_PALETTE.seal}>
+            {copy.homeTitle}
+          </text>
+          <rect x={cardRight - 186} y="88" width="186" height="58" fill="none" stroke={CARD_PALETTE.seal} />
+          <text x={cardRight - 93} y="127" fontSize="28" textAnchor="middle" fill={CARD_PALETTE.seal}>
+            {cardLabel}
+          </text>
+          <path
+            d={`M${CARD_MARGIN} 192H${cardRight} M${CARD_MARGIN} 1272H${cardRight}`}
+            fill="none"
+            stroke={CARD_PALETTE.line}
+            strokeWidth="2"
+          />
+          <text x={CARD_MARGIN} y="479" fontSize="158" fontWeight="600" letterSpacing="6">
+            {name}
+          </text>
+          <text x={CARD_MARGIN + 6} y="568" fontSize="43" fill={CARD_PALETTE.muted}>
+            字{courtesy}
+          </text>
+          <path d={`M${CARD_MARGIN} 692h72`} stroke={CARD_PALETTE.seal} strokeWidth="4" />
+          <text x={CARD_MARGIN} y="794" fontSize="55" fontWeight="600">
+            {chapterTitle}
+          </text>
+          <text fontSize="48">
+            {lines.map((line, index) => (
+              <tspan key={index} x={CARD_MARGIN} y={905 + index * 82}>{line}</tspan>
+            ))}
+          </text>
+          <text x={CARD_MARGIN} y="1340" fontSize="30" fill={CARD_PALETTE.muted}>
+            {SITE_HOST}
+          </text>
+        </svg>
+        <div className={styles.details}>
+          <p className={styles.note}>{copy.publicShareNote}</p>
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.primary}
+              aria-disabled={pending !== null}
+              aria-busy={pending === "save"}
+              onClick={() => perform("save", saveCard)}
+            >
+              <Download size={16} aria-hidden="true" />
+              {copy.saveCard}
+            </button>
+            <button
+              type="button"
+              className={styles.secondary}
+              aria-disabled={pending !== null}
+              aria-busy={pending === "share"}
+              onClick={() => perform("share", sharePublicPage)}
+            >
+              <Share2 size={16} aria-hidden="true" />
+              {copy.sharePage}
+            </button>
+            <button
+              type="button"
+              className={styles.tertiary}
+              aria-disabled={pending !== null}
+              aria-busy={pending === "copy"}
+              onClick={() => perform("copy", copyPublicUrl)}
+            >
+              <Link2 size={16} aria-hidden="true" />
+              {copy.copyLink}
+            </button>
+          </div>
+          <p className={styles.status} role="status">{status}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
